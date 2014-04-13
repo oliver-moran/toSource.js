@@ -1,0 +1,22 @@
+{
+  "name": "tosource",
+  "main": "toSource.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/oliver-moran/toSource.js",
+  "authors": [
+    "Oliver Moran <oliver.moran@gmail.com>"
+  ],
+  "description": "A polyfill for Mozilla's Object.toSource() method.",
+  "keywords": [
+    "toSource",
+    "polyfill"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
