@@ -68,7 +68,7 @@ if (typeof Object.toSource == "undefined") { // only if necessary
                 case "string":
                 case "function":
                 case "object":
-                    source += this[i].toSource();
+                    source += el.toSource();
                     break;
                 default:
                     source += "null";
@@ -88,9 +88,9 @@ if (typeof Object.toSource == "undefined") { // only if necessary
     Object.prototype.toSource = function () {
         var source = "{";
 
-        var props = Object.getOwnPropertyNames(this);
         var _that = this;
-        props.forEach(function(prop, i) {
+        var props = Object.getOwnPropertyNames(this);
+        props.forEach(function(prop, i, arr) {
             switch (typeof _that[prop]) {
                 case "number":
                 case "boolean":
@@ -100,10 +100,10 @@ if (typeof Object.toSource == "undefined") { // only if necessary
                     source += prop + ": " + _that[prop].toSource();
                     break;
                 default:
-                    source += "null";
+                    source += prop + ": " + "null";
             }
 
-            if (i < props.length - 1) source += ", ";
+            if (i < arr.length - 1) source += ", ";
         });
 
         source += "}";
