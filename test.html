@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>QUnit Example</title>
+        <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.14.0.css">
+    </head>
+    <body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
+    <script src="toSource.js"></script>
+    <script>
+        
+        //, Object, Date, RegExp
+        
+        test( "Number", function() {
+            ok( (42).toSource() == "(new Number(42))", "Natural" );
+            ok( (-42).toSource() == "(new Number(-42))", "Negative" );
+            ok( (4.2).toSource() == "(new Number(4.2))", "Float" );
+            ok( (4e2).toSource() == "(new Number(400))", "Exponent" );
+        });
+        
+        test( "Boolean", function() {
+            ok( (true).toSource() == "(new Boolean(true))", "true" );
+            ok( (false).toSource() == "(new Boolean(false))", "false" );
+            ok( (true == false).toSource() == "(new Boolean(false))", "Comparasion" );
+        });
+        
+        test( "String", function() {
+            ok( ("Hello World").toSource() == "(new String(\"Hello World\"))", "Simple" );
+            ok( ("Hello \"World\"").toSource() == "(new String(\"Hello \\\"World\\\"\"))", "Quotes" );
+        });
+        
+        test( "Function", function() {
+            function hello(world) {
+                return "Hello, " + world + "!";
+            }
+            
+            ok( hello.toSource() == hello.toString(), "toString()" );
+        });
+        
+        test( "Array", function() {
+            ok( ([1, "2", false]).toSource() == "[1, \"2\", false]", "Mixed Array" );
+        });
+        
+        test( "Object", function() {
+            ok( ({foo: "bar"}).toSource() == "({foo:\"bar\"})", "Valid ID" );
+            ok( ({"foo:bar": "baz"}).toSource() == "({'foo:bar':\"baz\"})", "Invalid ID" );
+            ok( ({"foo:bar": "baz", qux: "quux"}).toSource() == "({'foo:bar':\"baz\", qux:\"quux\"})", "Mixed IDs" );
+        });
+        
+        test( "Date", function() {
+            var d = new Date();
+            ok( (d).toSource() == "(new Date(" + d.getTime() + "))", "Current Date()" );
+        });
+        
+        test( "RegExp", function() {
+            ok( (/foo,bar/).toSource() == "/foo,bar/", "/foo,bar/" );
+        });
+        
+    </script>
+    </body>
+</html>
