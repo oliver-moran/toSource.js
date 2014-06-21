@@ -32,21 +32,21 @@ if (typeof Object.toSource == "undefined") { // only if necessary
      * Returns the source of this Number
      */
     Number.prototype.toSource = function () {
-        return "(new Number(\"" + this.toString() + "\"))";
+        return "(new Number(" + this.toString() + "))";
     }
 
     /**
      * Returns the source of this Boolean
      */
     Boolean.prototype.toSource = function () {
-        return "(new Boolean(\"" + this.toString() + "\"))";
+        return "(new Boolean(" + this.toString() + "))";
     }
 
     /**
      * Returns the source of this String
      */
     String.prototype.toSource = function () {
-        var source = this.replace(/"/g, "\"");
+        var source = this.replace(/"/g, "\\\"");
         source = source.replace(/\n/g, "\\n");
         source = source.replace(/\r/g, "\\r");
         return "(new String(\"" + source + "\"))";
@@ -63,16 +63,38 @@ if (typeof Object.toSource == "undefined") { // only if necessary
      * Returns the source of this Array
      */
     Array.prototype.toSource = function () {
+        return _arrayToSource(this, []);
+    };
+    
+    function _arrayToSource(arr, visited) {
+        visited.push(arr);
         var source = "[";
 
-        this.forEach(function (el, i, arr) {
+        arr.forEach(function (el, i, arr) {
             switch (typeof el) {
                 case "number":
                 case "boolean":
+                    source += el.toString();
+                    break;
                 case "string":
+                    var str = el.replace(/"/g, "\\\"");
+                    str = str.replace(/\n/g, "\\n");
+                    str = str.replace(/\r/g, "\\r");
+                    source += "\"" + str + "\"";
+                    break;
                 case "function":
                 case "object":
-                    source += el.toSource();
+                    if (el.constructor == Object) {
+                        source += (visited.indexOf(el) == -1)
+                            ? _objectToSource(el, visited)
+                            : "{}";
+                    } else if (el.constructor == Array) {
+                        source += (visited.indexOf(el) == -1)
+                            ? _arrayToSource(el, visited)
+                            : "[]";
+                    } else {
+                        source += el.toSource();
+                    }
                     break;
                 default:
                     source += "null";
@@ -90,10 +112,14 @@ if (typeof Object.toSource == "undefined") { // only if necessary
      * Returns the source of this Object
      */
     Object.prototype.toSource = function () {
-        var source = "({";
+        return "(" + _objectToSource(this, []) + ")";
+    };
+    
+    function _objectToSource(obj, visited){
+        visited.push(obj);
+        var source = "{";
 
-        var _that = this;
-        var props = Object.getOwnPropertyNames(this);
+        var props = Object.getOwnPropertyNames(obj);
         props.forEach(function(prop, i, arr) {
             
             var prop2 = prop;
@@ -102,13 +128,30 @@ if (typeof Object.toSource == "undefined") { // only if necessary
                 prop2 = "'" + prop2.replace(/'/g, "\'") + "'";
             }
             
-            switch (typeof _that[prop]) {
+            switch (typeof obj[prop]) {
                 case "number":
                 case "boolean":
+                    source += prop2 + ":" + obj[prop].toString();
+                    break;
                 case "string":
+                    var str = obj[prop].replace(/"/g, "\\\"");
+                    str = str.replace(/\n/g, "\\n");
+                    str = str.replace(/\r/g, "\\r");
+                    source += prop2 + ":" + "\"" + str + "\"";
+                    break;
                 case "function":
                 case "object":
-                    source += prop2 + ": " + _that[prop].toSource();
+                    if (obj[prop].constructor == Object) {
+                        source += (visited.indexOf(obj[prop]) == -1)
+                            ? prop2 + ":" + _objectToSource(obj[prop], visited)
+                            : prop2 + ":{}";
+                    } else if (obj[prop].constructor == Array) {
+                        source += (visited.indexOf(obj[prop]) == -1)
+                            ? prop2 + ":" + _arrayToSource(obj[prop], visited)
+                            : prop2 + ":[]";
+                    } else {
+                        source += prop2 + ":" + obj[prop].toSource();
+                    }
                     break;
                 default:
                     source += prop2 + ": " + "null";
@@ -117,7 +160,7 @@ if (typeof Object.toSource == "undefined") { // only if necessary
             if (i < arr.length - 1) source += ", ";
         });
 
-        source += "})";
+        source += "}";
 
         return source;
     }
@@ -143,8 +186,9 @@ if (typeof Object.toSource == "undefined") { // only if necessary
         objects.forEach(function (obj) {
             Object.defineProperty(obj.prototype, "toSource", {
                 writable: true,
-                value: this.toSource
+                value: obj.prototype.toSource
             });
         });
     }
+
 }
