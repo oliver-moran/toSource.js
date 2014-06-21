@@ -9,11 +9,12 @@
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
     <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
-    <script src="toSource.js"></script>
+    <script src="toSource.min.js"></script>
     <script>
         
         //, Object, Date, RegExp
         
+
         test( "Number", function() {
             ok( (42).toSource() == "(new Number(42))", "Natural" );
             ok( (-42).toSource() == "(new Number(-42))", "Negative" );
@@ -41,13 +42,23 @@
         });
         
         test( "Array", function() {
-            ok( ([1, "2", false]).toSource() == "[1, \"2\", false]", "Mixed Array" );
+            ok( ([1, "2", false, {a: 1, b: 2}]).toSource() == "[1, \"2\", false, {a:1, b:2}]", "Mixed Array" );
+
+            var arr = [1, "2", false, {a: 1, b: 2}];
+            arr.push(arr);
+            ok( (arr).toSource() == "[1, \"2\", false, {a:1, b:2}, []]", "Cicular Array" );
         });
         
         test( "Object", function() {
             ok( ({foo: "bar"}).toSource() == "({foo:\"bar\"})", "Valid ID" );
             ok( ({"foo:bar": "baz"}).toSource() == "({'foo:bar':\"baz\"})", "Invalid ID" );
             ok( ({"foo:bar": "baz", qux: "quux"}).toSource() == "({'foo:bar':\"baz\", qux:\"quux\"})", "Mixed IDs" );
+            ok( ({"foo": "bar", baz:{ qux: "quux"}}).toSource() == "({foo:\"bar\", baz:{qux:\"quux\"}})", "Nested Objects" );
+
+
+            var obj = {"foo": "bar", baz:{ qux: "quux"}};
+            obj.baz.obj = obj;
+            ok( (obj).toSource() == "({foo:\"bar\", baz:{qux:\"quux\", obj:{}}})", "Circular Object" );
         });
         
         test( "Date", function() {
