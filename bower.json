@@ -1,7 +1,7 @@
 {
   "name": "tosource",
   "main": "toSource.min.js",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "https://github.com/oliver-moran/toSource.js",
   "authors": [
     "Oliver Moran <https://github.com/oliver-moran>",
