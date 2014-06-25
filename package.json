@@ -1,6 +1,6 @@
 {
   "name": "tosource.js",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A polyfill for Mozilla's Object.toSource() method.",
   "main": "toSource.min.js",
   "scripts": {
