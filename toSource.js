@@ -188,7 +188,7 @@ if (typeof Object.toSource == "undefined") { // only if necessary
      * Returns the source of this Error
      */
     Error.prototype.toSource = function () {
-        var source = "(new " + this.name + "(\""+ this.message +"\"";
+        var source = "(new " + this.name + "(\""+ escape2(this.message) +"\"";
         if (typeof this.fileName == "string") {
             source += ", \"" + escape2(this.fileName) + "\"";
             if (typeof err.lineNumber == "number") {
