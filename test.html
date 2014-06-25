@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>QUnit Example</title>
+        <title>QUnit .toSource()</title>
         <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.14.0.css">
     </head>
     <body>
@@ -12,9 +12,6 @@
     <script src="toSource.min.js"></script>
     <script>
         
-        //, Object, Date, RegExp
-        
-
         test( "Number", function() {
             ok( (42).toSource() == "(new Number(42))", "Natural" );
             ok( (-42).toSource() == "(new Number(-42))", "Negative" );
@@ -68,6 +65,15 @@
         
         test( "RegExp", function() {
             ok( (/foo,bar/).toSource() == "/foo,bar/", "/foo,bar/" );
+        });
+        
+        test( "Error", function() {
+            try {
+                forty_two;
+            } catch (err) {
+                var res = /\(new ReferenceError\(\"forty_two is not defined\"(, \"[^\"]*\"(, \d+)?)?\)\)/.test(err.toSource());
+                ok( res, "/foo,bar/" );
+            }
         });
         
     </script>
