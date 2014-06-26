@@ -1,6 +1,6 @@
 {
   "name": "tosource.js",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A polyfill for Mozilla's Object.toSource() method.",
   "main": "toSource.min.js",
   "scripts": {
@@ -16,7 +16,8 @@
   ],
   "contributors": [
     "Oliver Moran <https://github.com/oliver-moran>",
-    "Damien Maillard <https://github.com/dmail>"
+    "Damien Maillard <https://github.com/dmail>",
+    "John Larson <https://github.com/johnlarson>"
   ],
   "license": "MIT",
   "bugs": {
