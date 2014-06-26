@@ -91,16 +91,21 @@ if (typeof Object.toSource == "undefined") { // only if necessary
                     break;
                 case "function":
                 case "object":
-                    if (el.constructor == Object) {
-                        source += (visited.indexOf(el) == -1)
-                            ? _objectToSource(el, visited)
-                            : "{}";
-                    } else if (el.constructor == Array) {
+                    if (el instanceof Function
+                            || el instanceof Date
+                            || el instanceof RegExp
+                            || el instanceof Error) {
+                        source += el.toSource();
+                    } else if (el instanceof Array) {
                         source += (visited.indexOf(el) == -1)
                             ? _arrayToSource(el, visited)
                             : "[]";
+                    } else if (el instanceof Object) {
+                        source += (visited.indexOf(el) == -1)
+                            ? _objectToSource(el, visited)
+                            : "{}";
                     } else {
-                        source += el.toSource();
+                        source += "null";
                     }
                     break;
                 default:
@@ -146,16 +151,21 @@ if (typeof Object.toSource == "undefined") { // only if necessary
                     break;
                 case "function":
                 case "object":
-                    if (obj[prop].constructor == Object) {
-                        source += (visited.indexOf(obj[prop]) == -1)
-                            ? prop2 + ":" + _objectToSource(obj[prop], visited)
-                            : prop2 + ":{}";
-                    } else if (obj[prop].constructor == Array) {
+                    if (obj[prop] instanceof Function
+                            || obj[prop] instanceof Date
+                            || obj[prop] instanceof RegExp
+                            || obj[prop] instanceof Error) {
+                        source += prop2 + ":" + obj[prop].toSource();
+                    } else if (obj[prop] instanceof Array) {
                         source += (visited.indexOf(obj[prop]) == -1)
                             ? prop2 + ":" + _arrayToSource(obj[prop], visited)
                             : prop2 + ":[]";
+                    } else if (obj[prop] instanceof Object) {
+                        source += (visited.indexOf(obj[prop]) == -1)
+                            ? prop2 + ":" + _objectToSource(obj[prop], visited)
+                            : prop2 + ":{}";
                     } else {
-                        source += prop2 + ":" + obj[prop].toSource();
+                        source += prop2 + ": null";
                     }
                     break;
                 default:
@@ -207,6 +217,7 @@ if (typeof Object.toSource == "undefined") { // only if necessary
         objects.forEach(function (obj) {
             Object.defineProperty(obj.prototype, "toSource", {
                 writable: true,
+                enumerable: false,
                 value: obj.prototype.toSource
             });
         });

@@ -11,23 +11,38 @@
     <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
     <script src="toSource.min.js"></script>
     <script>
-        
+
+        /**
+         * Tests if the toSource property is enumberable for an given object (any kind of object)
+         */
+        function toSourceIsNotEnumerableFor(Obj) {
+            var obj = new Obj();
+            var found = false;
+            for (var prop in obj) {
+                if (prop == "toSource") found = true;
+            }
+            return !found;
+        }
+
         test( "Number", function() {
             ok( (42).toSource() == "(new Number(42))", "Natural" );
             ok( (-42).toSource() == "(new Number(-42))", "Negative" );
             ok( (4.2).toSource() == "(new Number(4.2))", "Float" );
             ok( (4e2).toSource() == "(new Number(400))", "Exponent" );
+            ok( toSourceIsNotEnumerableFor(Number), "Not enumerable" );
         });
         
         test( "Boolean", function() {
             ok( (true).toSource() == "(new Boolean(true))", "true" );
             ok( (false).toSource() == "(new Boolean(false))", "false" );
             ok( (true == false).toSource() == "(new Boolean(false))", "Comparasion" );
+            ok( toSourceIsNotEnumerableFor(Boolean), "Not enumerable" );
         });
         
         test( "String", function() {
             ok( ("Hello World").toSource() == "(new String(\"Hello World\"))", "Simple" );
             ok( ("Hello \"World\"").toSource() == "(new String(\"Hello \\\"World\\\"\"))", "Quotes" );
+            ok( toSourceIsNotEnumerableFor(String), "Not enumerable" );
         });
         
         test( "Function", function() {
@@ -36,6 +51,7 @@
             }
             
             ok( hello.toSource() == hello.toString(), "toString()" );
+            ok( toSourceIsNotEnumerableFor(Function), "Not enumerable" );
         });
         
         test( "Array", function() {
@@ -44,6 +60,7 @@
             var arr = [1, "2", false, {a: 1, b: 2}];
             arr.push(arr);
             ok( (arr).toSource() == "[1, \"2\", false, {a:1, b:2}, []]", "Cicular Array" );
+            ok( toSourceIsNotEnumerableFor(Array), "Not enumerable" );
         });
         
         test( "Object", function() {
@@ -56,15 +73,19 @@
             var obj = {"foo": "bar", baz:{ qux: "quux"}};
             obj.baz.obj = obj;
             ok( (obj).toSource() == "({foo:\"bar\", baz:{qux:\"quux\", obj:{}}})", "Circular Object" );
+            
+            ok( toSourceIsNotEnumerableFor(Object), "Not enumerable" );
         });
         
         test( "Date", function() {
             var d = new Date();
             ok( (d).toSource() == "(new Date(" + d.getTime() + "))", "Current Date()" );
+            ok( toSourceIsNotEnumerableFor(Date), "Not enumerable" );
         });
         
         test( "RegExp", function() {
             ok( (/foo,bar/).toSource() == "/foo,bar/", "/foo,bar/" );
+            ok( toSourceIsNotEnumerableFor(RegExp), "Not enumerable" );
         });
         
         test( "Error", function() {
@@ -74,6 +95,7 @@
                 var res = /\(new ReferenceError\(\"forty_two is not defined\"(, \"[^\"]*\"(, \d+)?)?\)\)/.test(err.toSource());
                 ok( res, "/foo,bar/" );
             }
+            ok( toSourceIsNotEnumerableFor(Error), "Not enumerable" );
         });
         
     </script>
